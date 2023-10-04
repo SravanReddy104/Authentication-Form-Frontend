@@ -1,37 +1,46 @@
-import { useParams } from "react-router-dom";
-import { useEffect,useState } from "react";
-import axios from "../Axios"
+import { useEffect, useState } from "react";
+import axios from "../Axios";
 import { Link } from "react-router-dom";
-const Profile = () => {
-  const [data,setData] = useState([])
-  const {profile} = useParams()
+const Profile = ({ id }) => {
+  const [data, setData] = useState([]);
+
+  const token = localStorage.getItem("token");
+  const config = {
+    headers: { Authorization: `Bearer ${token}` },
+  };
   useEffect(() => {
+    console.log(id,"hello")
     const getInfo = async () => {
-      try{
-      const resp = await axios.get(`/info/${profile}`).then((resp)=>resp.data);
-      console.log(resp)
-      console.log(resp,"users")
-      setData(resp[0])     
-      }catch(e){
-        console.log(e)
+      try {
+        const resp = await axios
+          .get(`/info/${id}`, config)
+          .then((resp) => resp.data);
+        console.log(resp);
+        console.log(resp, "users");
+        setData(resp[0]);
+        console.log(data);
+      } catch (e) {
+        console.log(e);
       }
     };
-    getInfo()
-  }, [profile]);
+    getInfo();
+  }, [id]);
 
- 
-    return (
+  return (
     <div>
-      <h1 style={{ textAlign: "center" }}>Profile Page of {data.email}</h1>
-      <h3>Role: {data.role === "Admin"?"Admin":"user"}</h3>
-      {data.role === "admin" && (
-        <div>
-          <Link to={`http://localhost:8000/${profile}/users`}>Click to see All users </Link>
-        </div>
-        
+      <p>Email Address: {data.email}</p>
+      <p>Username: {data.name}</p>
 
+
+      <p>Role: {data.role === "Admin" ? "Admin" : "user"}</p>
+      {data.role === "admin" && (
+        <p>
+          <Link to={`http://localhost:3000/${id}/users`} replace={true}>
+            Click to see All users
+          </Link>
+        </p>
       )}
-    </div>);
-    
-  };
-  export default Profile;
+    </div>
+  );
+};
+export default Profile;

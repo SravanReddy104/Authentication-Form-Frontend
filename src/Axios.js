@@ -1,5 +1,5 @@
 import axios from "axios";
 const handler = axios.create({
-    baseURL:"http://localhost:8000/"
+    baseURL:"http://localhost:3002/"
 })
 export default handler
